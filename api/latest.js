@@ -3,12 +3,10 @@ import { list } from "@vercel/blob";
 export default async function handler(req, res) {
   try {
     const result = await list();
-
     const items = result.blobs || [];
 
-    // sắp xếp theo thời gian upload mới nhất
     items.sort((a, b) => {
-      return (b.uploadedAt || 0) - (a.uploadedAt || 0);
+      return new Date(b.uploadedAt || 0) - new Date(a.uploadedAt || 0);
     });
 
     if (items.length === 0) {
@@ -21,3 +19,7 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: String(err) });
   }
 }
+
+export const config = {
+  runtime: "nodejs20.x"
+};
