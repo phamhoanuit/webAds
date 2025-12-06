@@ -28,6 +28,7 @@
   </div>
 
 <script>
+const fileInput = document.getElementById('file');
 const preview = document.getElementById('preview');
 const info = document.getElementById('info');
 const uploadBtn = document.getElementById('uploadBtn');
@@ -38,24 +39,37 @@ fileInput.addEventListener('change', () => {
   preview.src = URL.createObjectURL(f);
 });
 
-uploadBtn.onclick = async () => {
-  const file = document.getElementById("file").files[0];
+uploadBtn.addEventListener('click', async () => {
+  const f = fileInput.files[0];
+  if (!f) { alert('Chọn file trước'); return; }
 
-  if (!file) {
-    alert("Please select a file");
-    return;
+  uploadBtn.disabled = true;
+  info.textContent = 'Đang upload...';
+
+  try {
+    const form = new FormData();
+    form.append('file', f);
+
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      body: form
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      info.textContent = 'Upload lỗi: ' + text;
+      uploadBtn.disabled = false;
+      return;
+    }
+
+    const j = await res.json();
+    info.innerHTML = 'Upload thành công! URL: <div class="url">' + (j.url || JSON.stringify(j)) + '</div>';
+  } catch (err) {
+    info.textContent = 'Lỗi upload: ' + err.message;
+  } finally {
+    uploadBtn.disabled = false;
   }
-
-  const res = await fetch("/api/upload", {
-    method: "POST",
-    body: file, // IMPORTANT!
-  });
-
-  const data = await res.json();
-  console.log(data);
-
-  alert("Uploaded! URL:\n" + data.url);
-};
+});
 </script>
 </body>
 </html>
