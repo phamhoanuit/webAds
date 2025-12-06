@@ -28,7 +28,6 @@
   </div>
 
 <script>
-const fileInput = document.getElementById('file');
 const preview = document.getElementById('preview');
 const info = document.getElementById('info');
 const uploadBtn = document.getElementById('uploadBtn');
@@ -39,41 +38,24 @@ fileInput.addEventListener('change', () => {
   preview.src = URL.createObjectURL(f);
 });
 
-uploadBtn.addEventListener('click', async () => {
-  const f = fileInput.files[0];
-  if (!f) { alert('Chọn file trước'); return; }
+uploadBtn.onclick = async () => {
+  const file = document.getElementById("file").files[0];
 
-  uploadBtn.disabled = true;
-  info.textContent = 'Đang đọc file...';
+  if (!file) {
+    alert("Please select a file");
+    return;
+  }
 
-  // Read file as base64 (data URL)
-  const reader = new FileReader();
-  reader.onload = async () => {
-    const dataUrl = reader.result; // data:<type>;base64,....
-    info.textContent = 'Đang upload...';
-    try {
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          filename: f.name,
-          dataUrl: dataUrl
-        })
-      });
-      const j = await res.json();
-      if (res.ok) {
-        info.innerHTML = 'Upload thành công! URL: <div class="url">' + j.url + '</div>';
-      } else {
-        info.textContent = 'Lỗi upload: ' + (j.error || res.status);
-      }
-    } catch (err) {
-      info.textContent = 'Lỗi upload: ' + err.message;
-    } finally {
-      uploadBtn.disabled = false;
-    }
-  };
-  reader.readAsDataURL(f);
-});
+  const res = await fetch("/api/upload", {
+    method: "POST",
+    body: file, // IMPORTANT!
+  });
+
+  const data = await res.json();
+  console.log(data);
+
+  alert("Uploaded! URL:\n" + data.url);
+};
 </script>
 </body>
 </html>
