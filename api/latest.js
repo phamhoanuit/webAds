@@ -1,27 +1,23 @@
-// Serverless function to list blobs and return the latest public URL
-// Uses '@vercel/blob' SDK's list function
-import { list } from '@vercel/blob';
+import { list } from "@vercel/blob";
 
 export default async function handler(req, res) {
   try {
-    // list blobs, descending order (SDK may support cursor/pagination)
-    const items = await list();
-    // items is expected to be array of { key, url?, createdAt? }
-    if (!items || items.length === 0) {
-      res.json({ url: null });
-      return;
-    }
-    // sort by createdAt if exists, else by key
-    items.sort((a,b) => {
-      const ta = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-      const tb = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-      return tb - ta;
+    const result = await list();
+
+    const items = result.blobs || [];
+
+    // sắp xếp theo thời gian upload mới nhất
+    items.sort((a, b) => {
+      return (b.uploadedAt || 0) - (a.uploadedAt || 0);
     });
-    const latest = items[0];
-    const url = latest.url || latest.publicUrl || latest.path || latest.key || null;
-    res.json({ url });
+
+    if (items.length === 0) {
+      return res.status(404).json({ error: "No images uploaded" });
+    }
+
+    return res.status(200).json({ url: items[0].url });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: err.message || String(err) });
+    console.error("LATEST ERROR:", err);
+    return res.status(500).json({ error: String(err) });
   }
 }
