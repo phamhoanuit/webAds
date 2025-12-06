@@ -1,38 +1,26 @@
 import { put } from "@vercel/blob";
-import { nanoid } from "nanoid";
-
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
 
 export default async function handler(req, res) {
   try {
-    if (req.method !== "POST") {
-      return res.status(405).json({ error: "Method not allowed" });
+    const form = await req.formData();
+    const file = form.get("file");
+
+    if (!file) {
+      return res.status(400).json({ error: "No file uploaded" });
     }
 
-    const chunks = [];
+    const filename = `${Date.now()}-${Math.random()
+      .toString(36)
+      .substring(2)}-${file.name}`;
 
-    for await (const chunk of req) {
-      chunks.push(chunk);
-    }
-
-    const buffer = Buffer.concat(chunks);
-
-    const filename = `uploads/${nanoid()}.jpg`;
-
-    const blob = await put(filename, buffer, {
+    const blob = await put(filename, file, {
       access: "public",
+      token: process.env.BLOB_READ_WRITE_TOKEN,
     });
 
-    return res.status(200).json({
-      url: blob.url,
-      pathname: blob.pathname,
-    });
-  } catch (error) {
-    console.error("Upload error:", error);
-    return res.status(500).json({ error: error.message });
+    return res.status(200).json({ url: blob.url });
+  } catch (err) {
+    console.error("UPLOAD ERROR:", err);
+    return res.status(500).json({ error: String(err) });
   }
 }
