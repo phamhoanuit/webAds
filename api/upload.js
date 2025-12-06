@@ -1,12 +1,18 @@
+export const config = {
+  runtime: "edge",
+};
+
 import { put } from "@vercel/blob";
 
-export default async function handler(req, res) {
+export default async function handler(req) {
   try {
     const form = await req.formData();
     const file = form.get("file");
 
     if (!file) {
-      return res.status(400).json({ error: "No file uploaded" });
+      return new Response(JSON.stringify({ error: "No file uploaded" }), {
+        status: 400,
+      });
     }
 
     const filename = `${Date.now()}-${Math.random()
@@ -18,9 +24,12 @@ export default async function handler(req, res) {
       token: process.env.BLOB_READ_WRITE_TOKEN,
     });
 
-    return res.status(200).json({ url: blob.url });
+    return new Response(JSON.stringify({ url: blob.url }), {
+      status: 200,
+    });
   } catch (err) {
-    console.error("UPLOAD ERROR:", err);
-    return res.status(500).json({ error: String(err) });
+    return new Response(JSON.stringify({ error: String(err) }), {
+      status: 500,
+    });
   }
 }
