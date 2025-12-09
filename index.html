@@ -2,44 +2,37 @@
 <html lang="vi">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Trang Quảng Cáo</title>
   <style>
-    body { margin:0; font-family: Arial, sans-serif; background:#111; color:white; }
-    .brand { position:absolute; top:20px; left:20px; opacity:0.9; }
-    .header { text-align:center; padding:120px 20px; z-index:1; position:relative; }
-    .header h1 { font-weight:300; font-size:56px; margin:0; }
-    .header h2 { font-weight:300; font-size:32px; margin-top:10px; }
-    .bg { position:fixed; inset:0; object-fit:cover; width:100%; height:100%; z-index:-1; opacity:0.45; filter: blur(0.3px); }
+    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#111;color:#fff;}
+    .brand{position:absolute;top:20px;left:20px;opacity:0.9}
+    .header{text-align:center;padding:120px 20px;position:relative;z-index:1}
+    .header h1{font-weight:300;font-size:48px;margin:0}
+    .header h2{font-weight:300;font-size:28px;margin-top:8px}
+    .bg{position:fixed;inset:0;object-fit:cover;width:100%;height:100%;z-index:-1;opacity:0.5;filter:blur(0.3px)}
   </style>
 </head>
 <body>
-  <img id="bg" class="bg" src="" alt="background" />
+  <img id="bg" class="bg" src="" alt="background"/>
   <div class="brand">www.denmikongtanh.com</div>
   <div class="header">
     <h1>Chào mừng</h1>
     <h2>bạn đến với trang web của tôi</h2>
   </div>
 
-  <script>
-    // Fetch latest blob URL from serverless API
-    async function loadBackground() {
-      try {
-        const res = await fetch('/api/latest');
-        if (!res.ok) throw new Error('Không lấy được');
-        const data = await res.json();
-        if (data && data.url) {
-          document.getElementById('bg').src = data.url;
-        } else {
-          console.warn('Chưa có ảnh nào trong Blob store');
-        }
-      } catch (err) {
-        console.error('Lỗi khi load background:', err);
-      }
-    }
-    loadBackground();
-    // Optional: poll every 30s for new image
-    setInterval(loadBackground, 30000);
-  </script>
+<script>
+async function loadBackground(){
+  try{
+    const res = await fetch('/api/latest');
+    if(!res.ok) return console.warn('No image');
+    const j = await res.json();
+    const url = j.url || (j.blobs && j.blobs[0] && j.blobs[0].url);
+    if(url) document.getElementById('bg').src = url;
+  }catch(e){ console.error(e); }
+}
+loadBackground();
+setInterval(loadBackground, 30000);
+</script>
 </body>
 </html>

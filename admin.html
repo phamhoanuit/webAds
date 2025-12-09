@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Admin Upload - Vercel Blob</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Upload</title>
   <style>
-    body{font-family:Arial,Helvetica,sans-serif;margin:20px;background:#f6f7fb;}
+    body{font-family:Arial,Helvetica,sans-serif;background:#f6f7fb;margin:20px}
     .card{max-width:720px;margin:24px auto;padding:20px;border-radius:8px;background:#fff;box-shadow:0 6px 18px rgba(0,0,0,0.08)}
     input[type=file]{display:block;margin-top:12px}
     #preview{max-width:100%;margin-top:12px}
@@ -17,11 +17,11 @@
 <body>
   <div class="card">
     <h2>Admin Upload (Vercel Blob)</h2>
-    <p>Chọn ảnh để upload lên Vercel Blob. Sau khi upload xong, ảnh sẽ có URL public và trang quảng cáo sẽ tự load ảnh mới nhất.</p>
+    <p>Chọn ảnh để upload lên Vercel Blob. Không cần mật khẩu. Sau upload, trang chính sẽ hiển thị ảnh mới nhất.</p>
 
     <input id="file" type="file" accept="image/*" />
     <img id="preview" src="" alt="" />
-    <br />
+    <br/>
     <button id="uploadBtn">Upload</button>
 
     <div class="info" id="info"></div>
@@ -33,40 +33,34 @@ const preview = document.getElementById('preview');
 const info = document.getElementById('info');
 const uploadBtn = document.getElementById('uploadBtn');
 
-fileInput.addEventListener('change', () => {
+fileInput.addEventListener('change', ()=> {
   const f = fileInput.files[0];
-  if (!f) return;
+  if(!f) return;
   preview.src = URL.createObjectURL(f);
 });
 
-uploadBtn.addEventListener('click', async () => {
+uploadBtn.addEventListener('click', async ()=> {
   const f = fileInput.files[0];
-  if (!f) { alert('Chọn file trước'); return; }
-
+  if(!f){ alert('Chọn file trước'); return; }
   uploadBtn.disabled = true;
   info.textContent = 'Đang upload...';
 
-  try {
+  try{
     const form = new FormData();
     form.append('file', f);
 
-    const res = await fetch('/api/upload', {
-      method: 'POST',
-      body: form
-    });
-
-    if (!res.ok) {
+    const res = await fetch('/api/upload', { method: 'POST', body: form });
+    if(!res.ok){
       const text = await res.text();
       info.textContent = 'Upload lỗi: ' + text;
       uploadBtn.disabled = false;
       return;
     }
-
     const j = await res.json();
-    info.innerHTML = 'Upload thành công! URL: <div class="url">' + (j.url || JSON.stringify(j)) + '</div>';
-  } catch (err) {
+    info.innerHTML = 'Upload thành công! URL: <div class="url">'+ (j.url || JSON.stringify(j)) +'</div>';
+  }catch(err){
     info.textContent = 'Lỗi upload: ' + err.message;
-  } finally {
+  }finally{
     uploadBtn.disabled = false;
   }
 });

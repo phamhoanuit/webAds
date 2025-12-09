@@ -1,8 +1,9 @@
 {
-  "name": "vercel-blob-admin",
+  "name": "vercel-blob-full",
   "version": "1.0.0",
-  "private": true,
+  "type": "module",
   "dependencies": {
-    "@vercel/blob": "^1.0.0"
+    "@vercel/blob": "latest",
+    "busboy": "^1.6.0"
   }
 }
