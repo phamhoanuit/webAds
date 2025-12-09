@@ -1,8 +1,6 @@
 import Busboy from "busboy";
 import { put } from "@vercel/blob";
 
-export const config = { runtime: "nodejs20" };
-
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     res.status(405).json({ error: "Method not allowed" });
@@ -38,4 +36,4 @@ export default async function handler(req, res) {
     console.error("UPLOAD ERROR:", err);
     return res.status(500).json({ error: String(err) });
   }
-};
+}

@@ -1,7 +1,5 @@
 import { list } from "@vercel/blob";
 
-export const config = { runtime: "nodejs20" };
-
 export default async function handler(req, res) {
   try {
     const result = await list();
@@ -24,4 +22,4 @@ export default async function handler(req, res) {
     console.error("LATEST ERROR:", err);
     return res.status(500).json({ error: String(err) });
   }
-};
+}
