@@ -1,9 +1,0 @@
-{
-  "name": "vercel-monorepo-blob",
-  "version": "1.0.0",
-  "type": "module",
-  "dependencies": {
-    "@vercel/blob": "latest",
-    "busboy": "^1.6.0"
-  }
-}
