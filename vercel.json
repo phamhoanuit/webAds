@@ -1,18 +1,5 @@
+
 {
-  "projects": [
-    {
-      "name": "web",
-      "rootDirectory": "apps/web"
-    },
-    {
-      "name": "admin",
-      "rootDirectory": "apps/admin"
-    },
-    {
-      "name": "api",
-      "rootDirectory": "api"
-    }
-  ],
   "rewrites": [
     { "source": "/", "destination": "/apps/web/index.html" },
     { "source": "/admin", "destination": "/apps/admin/index.html" },
