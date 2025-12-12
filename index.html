@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image Display</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+    img {
+      width: 100%;
+      height: 100vh;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+  <img id="mainImage" src="" />
+
+  <script>
+    async function loadImage() {
+      const res = await fetch("/api/image");
+      const data = await res.json();
+      if (data.url) {
+        document.getElementById("mainImage").src = data.url;
+      }
+    }
+    loadImage();
+  </script>
+</body>
+</html>
