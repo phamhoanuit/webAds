@@ -24,14 +24,14 @@ async function upload() {
 
   const buffer = await file.arrayBuffer();
 
-  await fetch('/api/upload', {
-  method: 'POST',
-  headers: {
-    'Content-Type': file.type,
-    'x-file-name': file.name
-  },
-  body: buffer
-});
+  const res = await fetch('/api/upload', {
+    method: 'POST',
+    headers: {
+      'Content-Type': file.type,
+      'x-file-name': file.name
+    },
+    body: buffer
+  });
 
   const data = await res.json();
   console.log(data);
@@ -39,10 +39,11 @@ async function upload() {
   if (data.success) {
     alert('Upload OK');
   } else {
-    alert('Upload fail');
+    alert('Upload fail: ' + data.error);
   }
 }
 </script>
+
 
 
 
