@@ -1,51 +1,27 @@
 <!DOCTYPE html>
-<html lang="vi">
-<head>
-<meta charset="UTF-8" />
-<title>Admin Upload Ads</title>
-<style>
-body { font-family: sans-serif; padding: 40px }
-</style>
-</head>
+<html>
 <body>
 
-
-<h2>Upload ảnh quảng cáo</h2>
-<input type="file" id="file" accept="image/*" />
-<br><br>
+<input type="file" id="file" />
 <button onclick="upload()">Upload</button>
-<p id="status"></p>
-
 
 <script>
 async function upload() {
   const file = document.getElementById('file').files[0];
   if (!file) return alert('Chưa chọn ảnh');
 
- const buffer = await file.arrayBuffer();
+  const buffer = await file.arrayBuffer();
 
-const res = await fetch('/api/upload', {
-  method: 'POST',
-  headers: {
-    'Content-Type': file.type,
-    'x-file-name': file.name
-  },
-  body: buffer
-});
+  const res = await fetch('/api/upload', {
+    method: 'POST',
+    headers: { 'Content-Type': file.type },
+    body: buffer
+  });
 
   const data = await res.json();
-  console.log(data);
-
-  if (data.success) {
-    alert('Upload OK');
-  } else {
-    alert('Upload fail: ' + data.error);
-  }
+  alert(data.success ? 'Upload OK' : 'Upload fail');
 }
 </script>
-
-
-
 
 </body>
 </html>

@@ -5,37 +5,34 @@
 <title>Ads Fullscreen</title>
 <style>
 html, body {
-margin: 0;
-padding: 0;
-width: 100%;
-height: 100%;
-background: black;
-overflow: hidden;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
 }
 img {
-width: 100vw;
-height: 100vh;
-object-fit: contain; /* đổi thành cover nếu cần */
+  width: 100vw;
+  height: 100vh;
+  object-fit: contain;
 }
 </style>
 </head>
 <body>
 
-
 <img id="ad" />
 
-
 <script>
-const BLOB_URL = "https://xua2wb01mbqffikk.public.blob.vercel-storage.com/ads/latest.jpg";
-
-function loadImage() {
-  document.getElementById('ad').src = BLOB_URL + '?ts=' + Date.now();
+async function loadImage() {
+  const res = await fetch('/api/latest', { cache: 'no-store' });
+  const data = await res.json();
+  if (data.url) {
+    document.getElementById('ad').src = data.url;
+  }
 }
 
 loadImage();
-setInterval(loadImage, 30000);
+setInterval(loadImage, 5000);
 </script>
-
 
 </body>
 </html>
