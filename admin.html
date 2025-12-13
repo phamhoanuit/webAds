@@ -22,16 +22,16 @@ async function upload() {
   const file = document.getElementById('file').files[0];
   if (!file) return alert('Chưa chọn ảnh');
 
-  const buffer = await file.arrayBuffer();
+ const buffer = await file.arrayBuffer();
 
-  const res = await fetch('/api/upload', {
-    method: 'POST',
-    headers: {
-      'Content-Type': file.type,
-      'x-file-name': file.name
-    },
-    body: buffer
-  });
+const res = await fetch('/api/upload', {
+  method: 'POST',
+  headers: {
+    'Content-Type': file.type,
+    'x-file-name': file.name
+  },
+  body: buffer
+});
 
   const data = await res.json();
   console.log(data);

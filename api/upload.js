@@ -1,4 +1,5 @@
 import { put } from '@vercel/blob';
+import { Buffer } from 'buffer';
 
 export const config = {
   api: { bodyParser: false }
@@ -10,12 +11,16 @@ export default async function handler(req, res) {
   }
 
   try {
-    const arrayBuffer = await req.arrayBuffer();
+    const chunks = [];
+    for await (const chunk of req) {
+      chunks.push(chunk);
+    }
 
-    const contentType = req.headers['content-type'];
-    const fileName = req.headers['x-file-name'] || 'latest.jpg';
+    const buffer = Buffer.concat(chunks);
 
-    const blob = await put(`ads/latest.jpg`, arrayBuffer, {
+    const contentType = req.headers['content-type'] || 'image/jpeg';
+
+    const blob = await put('ads/latest.jpg', buffer, {
       access: 'public',
       contentType
     });
