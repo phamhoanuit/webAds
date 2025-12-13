@@ -26,14 +26,14 @@ object-fit: contain; /* đổi thành cover nếu cần */
 
 
 <script>
+const BLOB_URL = "https://abc123.public.blob.vercel-storage.com/ads/latest.jpg";
+
 function loadImage() {
-const img = document.getElementById('ad');
-img.src = `/ads/latest.jpg?ts=${Date.now()}`;
+  document.getElementById('ad').src = BLOB_URL + '?ts=' + Date.now();
 }
 
-
 loadImage();
-setInterval(loadImage, 30 * 1000); // reload mỗi 30s
+setInterval(loadImage, 30000);
 </script>
 
 

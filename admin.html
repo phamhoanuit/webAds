@@ -19,30 +19,31 @@ body { font-family: sans-serif; padding: 40px }
 
 <script>
 async function upload() {
-const file = document.getElementById('file').files[0];
-if (!file) return alert('Chưa chọn ảnh');
+  const file = document.getElementById('file').files[0];
+  if (!file) return alert('Chưa chọn ảnh');
 
+  const buffer = await file.arrayBuffer();
 
-document.getElementById('status').innerText = 'Uploading...';
-
-
-const res = await fetch('/api/upload', {
-method: 'POST',
-headers: { 'Content-Type': file.type },
-body: file
+  await fetch('/api/upload', {
+  method: 'POST',
+  headers: {
+    'Content-Type': file.type,
+    'x-file-name': file.name
+  },
+  body: buffer
 });
 
+  const data = await res.json();
+  console.log(data);
 
-const data = await res.json();
-
-
-if (data.success) {
-document.getElementById('status').innerText = '✅ Upload thành công';
-} else {
-document.getElementById('status').innerText = '❌ Upload lỗi';
-}
+  if (data.success) {
+    alert('Upload OK');
+  } else {
+    alert('Upload fail');
+  }
 }
 </script>
+
 
 
 </body>
