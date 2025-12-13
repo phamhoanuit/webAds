@@ -3,41 +3,47 @@
 <head>
 <meta charset="UTF-8" />
 <title>Admin Upload Ads</title>
+<style>
+body { font-family: sans-serif; padding: 40px }
+</style>
 </head>
 <body>
-<h2>Upload quảng cáo</h2>
-<input type="file" id="fileInput" accept="image/*" />
-<button id="uploadBtn">Upload</button>
 
 
-<script type="module">
-import { app, db, storage } from './firebase.js';
-import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
-import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+<h2>Upload ảnh quảng cáo</h2>
+<input type="file" id="file" accept="image/*" />
+<br><br>
+<button onclick="upload()">Upload</button>
+<p id="status"></p>
 
 
-const fileInput = document.getElementById('fileInput');
+<script>
+async function upload() {
+const file = document.getElementById('file').files[0];
+if (!file) return alert('Chưa chọn ảnh');
 
 
-document.getElementById('uploadBtn').onclick = async () => {
-const file = fileInput.files[0];
-if (!file) return alert('Chọn ảnh trước');
+document.getElementById('status').innerText = 'Uploading...';
 
 
-const storageRef = ref(storage, `ads/${Date.now()}_${file.name}`);
-await uploadBytes(storageRef, file);
-const imageUrl = await getDownloadURL(storageRef);
-
-
-await addDoc(collection(db, 'ads'), {
-imageUrl,
-createdAt: serverTimestamp()
+const res = await fetch('/api/upload', {
+method: 'POST',
+headers: { 'Content-Type': file.type },
+body: file
 });
 
 
-alert('Upload thành công');
-fileInput.value = '';
-};
+const data = await res.json();
+
+
+if (data.success) {
+document.getElementById('status').innerText = '✅ Upload thành công';
+} else {
+document.getElementById('status').innerText = '❌ Upload lỗi';
+}
+}
 </script>
+
+
 </body>
 </html>

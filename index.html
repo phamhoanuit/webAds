@@ -1,7 +1,8 @@
+<!DOCTYPE html>
 <html lang="vi">
 <head>
 <meta charset="UTF-8" />
-<title>Ads Display</title>
+<title>Ads Fullscreen</title>
 <style>
 html, body {
 margin: 0;
@@ -9,38 +10,32 @@ padding: 0;
 width: 100%;
 height: 100%;
 background: black;
+overflow: hidden;
 }
 img {
 width: 100vw;
 height: 100vh;
-object-fit: contain; /* hoặc cover */
+object-fit: contain; /* đổi thành cover nếu cần */
 }
 </style>
 </head>
 <body>
-<img id="adImage" />
 
 
-<script type="module">
-import { app, db } from './firebase.js';
-import { collection, query, orderBy, limit, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+<img id="ad" />
 
 
-const img = document.getElementById('adImage');
-
-
-const q = query(
-collection(db, 'ads'),
-orderBy('createdAt', 'desc'),
-limit(1)
-);
-
-
-onSnapshot(q, snapshot => {
-if (!snapshot.empty) {
-img.src = snapshot.docs[0].data().imageUrl;
+<script>
+function loadImage() {
+const img = document.getElementById('ad');
+img.src = `/ads/latest.jpg?ts=${Date.now()}`;
 }
-});
+
+
+loadImage();
+setInterval(loadImage, 30 * 1000); // reload mỗi 30s
 </script>
+
+
 </body>
 </html>
