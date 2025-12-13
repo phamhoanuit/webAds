@@ -5,8 +5,6 @@ export const config = {
   api: { bodyParser: false }
 };
 
-let latestUrl = null;
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
 
@@ -23,13 +21,14 @@ export default async function handler(req, res) {
       contentType
     });
 
-    latestUrl = blob.url;
-
     res.status(200).json({
       success: true,
       url: blob.url
     });
   } catch (e) {
-    res.status(500).json({ success: false, error: e.message });
+    res.status(500).json({
+      success: false,
+      error: e.message
+    });
   }
 }
