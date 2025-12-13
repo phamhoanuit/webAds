@@ -1,31 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <title>Admin Upload</title>
+<meta charset="UTF-8" />
+<title>Admin Upload Ads</title>
 </head>
 <body>
+<h2>Upload quảng cáo</h2>
+<input type="file" id="fileInput" accept="image/*" />
+<button id="uploadBtn">Upload</button>
 
-<h2>Upload Image</h2>
-<input type="file" id="file" />
-<button onclick="upload()">Upload</button>
 
-<script>
-async function upload() {
-  const file = document.getElementById("file").files[0];
+<script type="module">
+import { app, db, storage } from './firebase.js';
+import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-  const form = new FormData();
-  form.append("file", file);
 
-  const res = await fetch("/api/upload", {
-    method: "POST",
-    body: form
-  });
+const fileInput = document.getElementById('fileInput');
 
-  const data = await res.json();
-  alert("Uploaded!");
-}
+
+document.getElementById('uploadBtn').onclick = async () => {
+const file = fileInput.files[0];
+if (!file) return alert('Chọn ảnh trước');
+
+
+const storageRef = ref(storage, `ads/${Date.now()}_${file.name}`);
+await uploadBytes(storageRef, file);
+const imageUrl = await getDownloadURL(storageRef);
+
+
+await addDoc(collection(db, 'ads'), {
+imageUrl,
+createdAt: serverTimestamp()
+});
+
+
+alert('Upload thành công');
+fileInput.value = '';
+};
 </script>
-
 </body>
 </html>

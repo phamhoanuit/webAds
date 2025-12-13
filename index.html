@@ -1,34 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Image Display</title>
-  <style>
-    body, html {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-    }
-    img {
-      width: 100%;
-      height: 100vh;
-      object-fit: cover;
-    }
-  </style>
+<meta charset="UTF-8" />
+<title>Ads Display</title>
+<style>
+html, body {
+margin: 0;
+padding: 0;
+width: 100%;
+height: 100%;
+background: black;
+}
+img {
+width: 100vw;
+height: 100vh;
+object-fit: contain; /* hoặc cover */
+}
+</style>
 </head>
 <body>
-  <img id="mainImage" src="" />
+<img id="adImage" />
 
-  <script>
-    async function loadImage() {
-      const res = await fetch("/api/image");
-      const data = await res.json();
-      if (data.url) {
-        document.getElementById("mainImage").src = data.url;
-      }
-    }
-    loadImage();
-  </script>
+
+<script type="module">
+import { app, db } from './firebase.js';
+import { collection, query, orderBy, limit, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+
+const img = document.getElementById('adImage');
+
+
+const q = query(
+collection(db, 'ads'),
+orderBy('createdAt', 'desc'),
+limit(1)
+);
+
+
+onSnapshot(q, snapshot => {
+if (!snapshot.empty) {
+img.src = snapshot.docs[0].data().imageUrl;
+}
+});
+</script>
 </body>
 </html>
